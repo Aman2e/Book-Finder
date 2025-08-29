@@ -1,10 +1,11 @@
-import { AlertCircle, Search, BookOpen, RotateCcw } from 'lucide-react';
+import { AlertCircle, Search, BookOpen, RotateCcw, TrendingUp, Star, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { SearchBar } from '@/components/search-bar';
 import { BookCard } from '@/components/book-card';
 import { LoadingSkeleton, LoadingSpinner } from '@/components/loading-skeleton';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { useBookSearch } from '@/hooks/use-book-search';
+import { usePopularBooks } from '@/hooks/use-popular-books';
 
 export default function Home() {
   const {
@@ -21,6 +22,14 @@ export default function Home() {
     getBookCoverUrl,
     refetch,
   } = useBookSearch();
+
+  const {
+    classics,
+    bestsellers,
+    trending,
+    scifi,
+    getBookCoverUrl: getPopularBookCoverUrl,
+  } = usePopularBooks();
 
   const renderSearchResults = () => {
     if (isLoading) {
@@ -167,6 +176,119 @@ export default function Home() {
       <main className="container mx-auto px-4 py-8 max-w-6xl">
         {/* Search Section */}
         <SearchBar onSearch={handleSearch} isLoading={isLoading} />
+
+        {/* Popular Books Sections - Only show when no search has been made */}
+        {!hasSearched && (
+          <div className="space-y-16">
+            {/* Trending Books */}
+            <section className="slide-up">
+              <div className="flex items-center mb-8">
+                <TrendingUp className="w-7 h-7 text-orange-500 dark:text-orange-400 mr-3" />
+                <h2 className="font-serif text-3xl font-bold bg-gradient-to-r from-orange-600 to-emerald-600 dark:from-orange-400 dark:to-emerald-400 bg-clip-text text-transparent">
+                  Trending Now
+                </h2>
+                <Sparkles className="w-6 h-6 text-emerald-500 dark:text-emerald-400 ml-3 floating" />
+              </div>
+              
+              {trending.isLoading ? (
+                <LoadingSkeleton />
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {trending.data.slice(0, 8).map((book) => (
+                    <BookCard
+                      key={book.key}
+                      book={book}
+                      coverUrl={getPopularBookCoverUrl(book.cover_i)}
+                      isFavorite={isFavorite(book)}
+                      onToggleFavorite={() => toggleFavorite(book)}
+                    />
+                  ))}
+                </div>
+              )}
+            </section>
+
+            {/* Bestsellers */}
+            <section className="slide-up">
+              <div className="flex items-center mb-8">
+                <Star className="w-7 h-7 text-yellow-500 dark:text-yellow-400 mr-3" />
+                <h2 className="font-serif text-3xl font-bold bg-gradient-to-r from-yellow-600 to-orange-600 dark:from-yellow-400 dark:to-orange-400 bg-clip-text text-transparent">
+                  Bestsellers
+                </h2>
+                <Star className="w-6 h-6 text-yellow-500 dark:text-yellow-400 ml-3 floating" />
+              </div>
+              
+              {bestsellers.isLoading ? (
+                <LoadingSkeleton />
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {bestsellers.data.slice(0, 8).map((book) => (
+                    <BookCard
+                      key={book.key}
+                      book={book}
+                      coverUrl={getPopularBookCoverUrl(book.cover_i)}
+                      isFavorite={isFavorite(book)}
+                      onToggleFavorite={() => toggleFavorite(book)}
+                    />
+                  ))}
+                </div>
+              )}
+            </section>
+
+            {/* Classic Literature */}
+            <section className="slide-up">
+              <div className="flex items-center mb-8">
+                <BookOpen className="w-7 h-7 text-purple-500 dark:text-purple-400 mr-3" />
+                <h2 className="font-serif text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 dark:from-purple-400 dark:to-blue-400 bg-clip-text text-transparent">
+                  Classic Literature
+                </h2>
+                <BookOpen className="w-6 h-6 text-purple-500 dark:text-purple-400 ml-3 floating" />
+              </div>
+              
+              {classics.isLoading ? (
+                <LoadingSkeleton />
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {classics.data.slice(0, 8).map((book) => (
+                    <BookCard
+                      key={book.key}
+                      book={book}
+                      coverUrl={getPopularBookCoverUrl(book.cover_i)}
+                      isFavorite={isFavorite(book)}
+                      onToggleFavorite={() => toggleFavorite(book)}
+                    />
+                  ))}
+                </div>
+              )}
+            </section>
+
+            {/* Science Fiction */}
+            <section className="slide-up">
+              <div className="flex items-center mb-8">
+                <Sparkles className="w-7 h-7 text-cyan-500 dark:text-cyan-400 mr-3" />
+                <h2 className="font-serif text-3xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 dark:from-cyan-400 dark:to-blue-400 bg-clip-text text-transparent">
+                  Science Fiction
+                </h2>
+                <Sparkles className="w-6 h-6 text-cyan-500 dark:text-cyan-400 ml-3 floating" />
+              </div>
+              
+              {scifi.isLoading ? (
+                <LoadingSkeleton />
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {scifi.data.slice(0, 8).map((book) => (
+                    <BookCard
+                      key={book.key}
+                      book={book}
+                      coverUrl={getPopularBookCoverUrl(book.cover_i)}
+                      isFavorite={isFavorite(book)}
+                      onToggleFavorite={() => toggleFavorite(book)}
+                    />
+                  ))}
+                </div>
+              )}
+            </section>
+          </div>
+        )}
 
         {/* Search Results */}
         <section id="search-results" className="slide-up">
