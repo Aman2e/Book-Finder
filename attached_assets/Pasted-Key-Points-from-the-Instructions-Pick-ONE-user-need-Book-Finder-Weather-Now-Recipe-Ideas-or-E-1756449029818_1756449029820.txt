@@ -1,0 +1,117 @@
+Key Points from the Instructions
+
+Pick ONE user need → (Book Finder, Weather Now, Recipe Ideas, or Earthquake Visualizer).
+
+Use React or Svelte (React is safer since it’s more common).
+
+Use Tailwind CSS (recommended) for speed and clean design.
+
+Fetch from public API (no authentication needed).
+
+Deploy → CodeSandbox / StackBlitz (free, fast).
+
+Submit within 1 week with:
+
+ChatGPT link (Level 1, 50%).
+
+Live working app (Level 2, 30%).
+
+Code with README (Level 3, 20%).
+
+✅ Recommended Choice
+
+If you want maximum scoring with minimal complexity, I’d suggest:
+
+1. Book Finder (Alex)
+
+Simple API (https://openlibrary.org/search.json?title={bookTitle})
+
+Rich data (title, author, year, covers).
+
+Easy to add features: search, pagination, favorites.
+
+OR
+2. Weather Now (Jamie)
+
+Very straightforward (Open-Meteo API).
+
+Input city → fetch weather → show results.
+
+Can enhance with icons & simple hourly forecast.
+
+🚀 Suggested Project Plan (Book Finder Example)
+MVP Features
+
+Input field → search books by title.
+
+Display results with:
+
+Book cover (Open Library has cover images).
+
+Title, author, year.
+
+Handle errors → “No books found” / network error.
+
+Loading spinner.
+
+Extra Features (optional for brownie points)
+
+Search by author or ISBN.
+
+Save favorite books (localStorage).
+
+Pagination or infinite scroll.
+
+Responsive layout for mobile.
+
+🛠️ Tech Stack
+
+Framework: React + Vite (fast setup).
+
+Styling: Tailwind CSS.
+
+Data Fetching: fetch API (native).
+
+Deployment: CodeSandbox or Vercel.
+
+📂 Project Structure
+src/
+ ├── components/
+ │    ├── SearchBar.jsx
+ │    ├── BookCard.jsx
+ │    └── Loader.jsx
+ ├── pages/
+ │    └── Home.jsx
+ ├── App.jsx
+ ├── index.css
+ └── main.jsx
+
+📌 README Checklist
+
+Project overview.
+
+Features.
+
+API used.
+
+How to run locally.
+
+Deployed link.
+
+🎯 Step-by-Step Execution Plan
+
+Decide which app you want (Book Finder is my top pick).
+
+Set up React + Tailwind (npm create vite@latest book-finder).
+
+Build UI skeleton → header, search bar, results grid.
+
+Connect API → fetch & display books.
+
+Add error handling + loader.
+
+Style → clean UI with Tailwind.
+
+Deploy to CodeSandbox / Vercel.
+
+Write README.
