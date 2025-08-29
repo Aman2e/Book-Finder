@@ -108,27 +108,27 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen text-foreground font-sans" style={{ background: 'var(--background)' }}>
+    <div className="min-h-screen bg-background dark:bg-background text-foreground dark:text-foreground font-sans">
       {/* Header */}
-      <header className="backdrop-blur-sm border-b border-border/50 shadow-lg relative overflow-hidden" style={{ background: 'var(--card)' }}>
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5"></div>
+      <header className="bg-card dark:bg-card backdrop-blur-sm border-b border-border dark:border-border shadow-lg relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-orange-500/5 via-transparent to-emerald-500/5 dark:from-orange-400/5 dark:via-transparent dark:to-emerald-400/5"></div>
         <div className="container mx-auto px-4 py-6 max-w-6xl relative z-10">
           <div className="flex items-center justify-between">
             {/* Logo and Name */}
-            <div className="flex items-center space-x-3 slide-up">
+            <div className="flex items-center space-x-4 slide-up">
               <div className="relative">
-                <div className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-xl flex items-center justify-center shadow-lg">
-                  <BookOpen className="w-7 h-7 text-white" />
+                <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-amber-600 dark:from-orange-400 dark:to-amber-500 rounded-xl flex items-center justify-center shadow-xl">
+                  <BookOpen className="w-8 h-8 text-white" />
                 </div>
-                <div className="absolute -top-1 -right-1 w-4 h-4 bg-accent rounded-full flex items-center justify-center">
+                <div className="absolute -top-1 -right-1 w-5 h-5 bg-emerald-500 dark:bg-emerald-400 rounded-full flex items-center justify-center shadow-md">
                   <span className="text-xs text-white font-bold">📚</span>
                 </div>
               </div>
               <div>
-                <h1 className="font-serif text-2xl md:text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent" data-testid="text-app-title">
-                  Book Finder
+                <h1 className="font-serif text-3xl md:text-4xl font-bold text-foreground dark:text-foreground" data-testid="text-app-title">
+                  <span className="bg-gradient-to-r from-orange-600 to-amber-600 dark:from-orange-400 dark:to-amber-400 bg-clip-text text-transparent">Book Finder</span>
                 </h1>
-                <p className="text-xs text-muted-foreground font-medium">
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground font-medium">
                   Your Literary Discovery Platform
                 </p>
               </div>
@@ -137,10 +137,10 @@ export default function Home() {
             {/* Center Title for larger screens */}
             <div className="hidden lg:flex items-center text-center flex-1 justify-center">
               <div className="slide-up">
-                <h2 className="font-serif text-3xl font-bold mb-2 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
+                <h2 className="font-serif text-3xl font-bold mb-2 bg-gradient-to-r from-orange-600 via-emerald-600 to-orange-600 dark:from-orange-400 dark:via-emerald-400 dark:to-orange-400 bg-clip-text text-transparent">
                   Discover Your Next Great Read ✨
                 </h2>
-                <p className="text-muted-foreground text-sm font-medium">
+                <p className="text-muted-foreground dark:text-muted-foreground text-sm font-medium">
                   Search millions of books • Find hidden gems • Build your reading list
                 </p>
               </div>
@@ -154,10 +154,10 @@ export default function Home() {
 
           {/* Mobile center content */}
           <div className="lg:hidden mt-6 text-center slide-up">
-            <h2 className="font-serif text-xl font-bold mb-2 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
+            <h2 className="font-serif text-xl font-bold mb-2 bg-gradient-to-r from-orange-600 via-emerald-600 to-orange-600 dark:from-orange-400 dark:via-emerald-400 dark:to-orange-400 bg-clip-text text-transparent">
               Discover Your Next Great Read ✨
             </h2>
-            <p className="text-muted-foreground text-sm font-medium">
+            <p className="text-muted-foreground dark:text-muted-foreground text-sm font-medium">
               Search millions of books • Find hidden gems • Build your reading list
             </p>
           </div>

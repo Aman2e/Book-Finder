@@ -41,9 +41,9 @@ export function SearchBar({ onSearch, isLoading }: SearchBarProps) {
       <div className="max-w-2xl mx-auto">
         <div className="relative mb-4">
           <div className="flex items-center justify-center mb-6">
-            <Sparkles className={`w-6 h-6 text-primary mr-2 ${isAnimating ? 'floating' : ''} transition-all duration-300`} />
-            <h2 className="text-xl font-semibold text-foreground">Find Your Next Great Read</h2>
-            <Sparkles className={`w-6 h-6 text-primary ml-2 ${isAnimating ? 'floating' : ''} transition-all duration-300`} />
+            <Sparkles className={`w-6 h-6 text-orange-500 dark:text-orange-400 mr-2 ${isAnimating ? 'floating' : ''} transition-all duration-300`} />
+            <h2 className="text-xl font-semibold text-foreground dark:text-foreground">Find Your Next Great Read</h2>
+            <Sparkles className={`w-6 h-6 text-orange-500 dark:text-orange-400 ml-2 ${isAnimating ? 'floating' : ''} transition-all duration-300`} />
           </div>
         </div>
         
@@ -54,11 +54,11 @@ export function SearchBar({ onSearch, isLoading }: SearchBarProps) {
               placeholder="Search for books by title..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="w-full px-6 py-5 text-lg bg-input border-2 border-border rounded-xl search-focus outline-none transition-all duration-300 pl-14 text-foreground placeholder:text-muted-foreground"
+              className="w-full px-6 py-5 text-lg bg-input dark:bg-input border-2 border-border dark:border-border rounded-xl search-focus outline-none transition-all duration-300 pl-14 text-foreground dark:text-foreground placeholder:text-muted-foreground dark:placeholder:text-muted-foreground"
               data-testid="input-search"
               disabled={isLoading}
             />
-            <Search className={`absolute left-5 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5 transition-all duration-300 ${isAnimating ? 'animate-pulse text-primary' : ''}`} />
+            <Search className={`absolute left-5 top-1/2 transform -translate-y-1/2 text-muted-foreground dark:text-muted-foreground w-5 h-5 transition-all duration-300 ${isAnimating ? 'animate-pulse text-orange-500 dark:text-orange-400' : ''}`} />
             <Button
               type="submit"
               className={`absolute right-3 top-1/2 transform -translate-y-1/2 gradient-button px-6 py-2 rounded-lg font-medium transition-all duration-300 ${isAnimating ? 'animate-pulse' : ''}`}
