@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { SearchBar } from '@/components/search-bar';
 import { BookCard } from '@/components/book-card';
 import { LoadingSkeleton, LoadingSpinner } from '@/components/loading-skeleton';
+import { ThemeToggle } from '@/components/theme-toggle';
 import { useBookSearch } from '@/hooks/use-book-search';
 
 export default function Home() {
@@ -111,15 +112,21 @@ export default function Home() {
       {/* Header */}
       <header className="bg-card border-b border-border shadow-sm">
         <div className="container mx-auto px-4 py-6 max-w-6xl">
-          <div className="flex items-center justify-center text-center">
-            <div>
-              <h1 className="font-serif text-4xl md:text-5xl font-bold text-primary mb-2" data-testid="text-app-title">
-                <BookOpen className="inline-block mr-3 w-12 h-12" />
-                Book Finder
-              </h1>
-              <p className="text-muted-foreground text-lg" data-testid="text-app-subtitle">
-                Discover your next great read
-              </p>
+          <div className="flex items-center justify-between">
+            <div className="flex-1"></div>
+            <div className="flex items-center text-center">
+              <div>
+                <h1 className="font-serif text-4xl md:text-5xl font-bold text-primary mb-2" data-testid="text-app-title">
+                  <BookOpen className="inline-block mr-3 w-12 h-12" />
+                  Book Finder
+                </h1>
+                <p className="text-muted-foreground text-lg" data-testid="text-app-subtitle">
+                  Discover your next great read
+                </p>
+              </div>
+            </div>
+            <div className="flex-1 flex justify-end">
+              <ThemeToggle />
             </div>
           </div>
         </div>
