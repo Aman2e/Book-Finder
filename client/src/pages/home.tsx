@@ -112,23 +112,54 @@ export default function Home() {
       {/* Header */}
       <header className="backdrop-blur-sm border-b border-border/50 shadow-lg relative overflow-hidden" style={{ background: 'var(--card)' }}>
         <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5"></div>
-        <div className="container mx-auto px-4 py-8 max-w-6xl relative z-10">
+        <div className="container mx-auto px-4 py-6 max-w-6xl relative z-10">
           <div className="flex items-center justify-between">
-            <div className="flex-1"></div>
-            <div className="flex items-center text-center">
-              <div className="slide-up">
-                <h1 className="font-serif text-4xl md:text-6xl font-bold mb-3 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent" data-testid="text-app-title">
-                  <BookOpen className="inline-block mr-4 w-16 h-16 text-primary floating" />
+            {/* Logo and Name */}
+            <div className="flex items-center space-x-3 slide-up">
+              <div className="relative">
+                <div className="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-xl flex items-center justify-center shadow-lg">
+                  <BookOpen className="w-7 h-7 text-white" />
+                </div>
+                <div className="absolute -top-1 -right-1 w-4 h-4 bg-accent rounded-full flex items-center justify-center">
+                  <span className="text-xs text-white font-bold">📚</span>
+                </div>
+              </div>
+              <div>
+                <h1 className="font-serif text-2xl md:text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent" data-testid="text-app-title">
                   Book Finder
                 </h1>
-                <p className="text-muted-foreground text-xl font-medium" data-testid="text-app-subtitle">
-                  Discover your next great read ✨
+                <p className="text-xs text-muted-foreground font-medium">
+                  Your Literary Discovery Platform
                 </p>
               </div>
             </div>
-            <div className="flex-1 flex justify-end">
+
+            {/* Center Title for larger screens */}
+            <div className="hidden lg:flex items-center text-center flex-1 justify-center">
+              <div className="slide-up">
+                <h2 className="font-serif text-3xl font-bold mb-2 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
+                  Discover Your Next Great Read ✨
+                </h2>
+                <p className="text-muted-foreground text-sm font-medium">
+                  Search millions of books • Find hidden gems • Build your reading list
+                </p>
+              </div>
+            </div>
+
+            {/* Theme Toggle */}
+            <div className="flex justify-end">
               <ThemeToggle />
             </div>
+          </div>
+
+          {/* Mobile center content */}
+          <div className="lg:hidden mt-6 text-center slide-up">
+            <h2 className="font-serif text-xl font-bold mb-2 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
+              Discover Your Next Great Read ✨
+            </h2>
+            <p className="text-muted-foreground text-sm font-medium">
+              Search millions of books • Find hidden gems • Build your reading list
+            </p>
           </div>
         </div>
       </header>
