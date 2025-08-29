@@ -4,24 +4,24 @@
 @tailwind utilities;
 
 :root {
-  --background: hsl(43, 15%, 98%);
+  --background: linear-gradient(135deg, hsl(43, 25%, 98%) 0%, hsl(47, 20%, 96%) 100%);
   --foreground: hsl(0, 0%, 17%);
   --card: hsl(0, 0%, 100%);
   --card-foreground: hsl(0, 0%, 17%);
   --popover: hsl(0, 0%, 100%);
   --popover-foreground: hsl(0, 0%, 17%);
-  --primary: hsl(25, 60%, 35%);
+  --primary: linear-gradient(135deg, hsl(25, 70%, 45%) 0%, hsl(35, 60%, 40%) 100%);
   --primary-foreground: hsl(0, 0%, 98%);
-  --secondary: hsl(47, 25%, 88%);
+  --secondary: hsl(47, 35%, 88%);
   --secondary-foreground: hsl(0, 0%, 17%);
   --muted: hsl(45, 15%, 94%);
   --muted-foreground: hsl(0, 0%, 45%);
-  --accent: hsl(120, 25%, 25%);
+  --accent: linear-gradient(135deg, hsl(120, 35%, 35%) 0%, hsl(110, 30%, 30%) 100%);
   --accent-foreground: hsl(0, 0%, 98%);
   --destructive: hsl(0, 84%, 60%);
   --destructive-foreground: hsl(0, 0%, 98%);
-  --border: hsl(0, 0%, 90%);
-  --input: hsl(0, 0%, 95%);
+  --border: hsl(0, 0%, 88%);
+  --input: hsl(0, 0%, 97%);
   --ring: hsl(25, 60%, 35%);
   --chart-1: hsl(203.8863, 88.2845%, 53.1373%);
   --chart-2: hsl(159.7826, 100%, 36.0784%);
@@ -53,24 +53,24 @@
 }
 
 .dark {
-  --background: hsl(0, 0%, 0%);
+  --background: linear-gradient(135deg, hsl(0, 0%, 8%) 0%, hsl(220, 15%, 12%) 100%);
   --foreground: hsl(200, 6.6667%, 91.1765%);
-  --card: hsl(228, 9.8039%, 10%);
+  --card: linear-gradient(135deg, hsl(228, 15%, 15%) 0%, hsl(235, 10%, 18%) 100%);
   --card-foreground: hsl(0, 0%, 85.0980%);
   --popover: hsl(0, 0%, 0%);
   --popover-foreground: hsl(200, 6.6667%, 91.1765%);
-  --primary: hsl(25, 60%, 45%);
+  --primary: linear-gradient(135deg, hsl(25, 70%, 55%) 0%, hsl(35, 60%, 50%) 100%);
   --primary-foreground: hsl(0, 0%, 100%);
   --secondary: hsl(47, 25%, 20%);
   --secondary-foreground: hsl(0, 0%, 85%);
-  --muted: hsl(0, 0%, 9.4118%);
+  --muted: hsl(0, 0%, 12%);
   --muted-foreground: hsl(210, 3.3898%, 46.2745%);
-  --accent: hsl(120, 25%, 35%);
+  --accent: linear-gradient(135deg, hsl(120, 35%, 45%) 0%, hsl(110, 30%, 40%) 100%);
   --accent-foreground: hsl(0, 0%, 98%);
   --destructive: hsl(0, 84%, 60%);
   --destructive-foreground: hsl(0, 0%, 100%);
-  --border: hsl(210, 5.2632%, 14.9020%);
-  --input: hsl(207.6923, 27.6596%, 18.4314%);
+  --border: hsl(210, 8%, 22%);
+  --input: hsl(210, 20%, 20%);
   --ring: hsl(25, 60%, 45%);
   --chart-1: hsl(203.8863, 88.2845%, 53.1373%);
   --chart-2: hsl(159.7826, 100%, 36.0784%);
@@ -105,22 +105,74 @@
   }
 
   body {
-    @apply font-sans antialiased bg-background text-foreground;
+    @apply font-sans antialiased text-foreground;
+    background: var(--background);
+    background-attachment: fixed;
+  }
+  
+  html {
+    scroll-behavior: smooth;
   }
 }
 
 @layer components {
   .book-card {
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .book-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+    transform: translateX(-100%);
+    transition: transform 0.6s;
+    z-index: 1;
+  }
+  
+  .book-card:hover::before {
+    transform: translateX(100%);
   }
   
   .book-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15), 0 0 0 1px rgba(255,255,255,0.1);
   }
   
   .search-focus:focus {
-    box-shadow: 0 0 0 3px hsl(25, 60%, 35%, 0.2);
+    box-shadow: 0 0 0 3px hsl(25, 60%, 35%, 0.3);
+    transform: scale(1.01);
+    transition: all 0.3s ease;
+  }
+  
+  .search-container {
+    position: relative;
+  }
+  
+  .search-container::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(45deg, hsl(25, 70%, 45%), hsl(35, 60%, 40%), hsl(25, 70%, 45%));
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: -1;
+  }
+  
+  .search-container:focus-within::before {
+    opacity: 1;
+    animation: pulse-glow 2s infinite;
+  }
+  
+  @keyframes pulse-glow {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
   }
   
   .loading-spinner {
@@ -133,13 +185,100 @@
   }
   
   .book-shimmer {
-    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background: linear-gradient(90deg, 
+      hsl(0, 0%, 95%) 25%, 
+      hsl(0, 0%, 85%) 50%, 
+      hsl(0, 0%, 95%) 75%);
     background-size: 200% 100%;
-    animation: shimmer 1.5s infinite;
+    animation: shimmer 2s infinite;
+  }
+  
+  .dark .book-shimmer {
+    background: linear-gradient(90deg, 
+      hsl(0, 0%, 15%) 25%, 
+      hsl(0, 0%, 25%) 50%, 
+      hsl(0, 0%, 15%) 75%);
+    background-size: 200% 100%;
   }
   
   @keyframes shimmer {
     0% { background-position: -200% 0; }
     100% { background-position: 200% 0; }
+  }
+  
+  .gradient-button {
+    background: var(--primary);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .gradient-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+  }
+  
+  .gradient-button:hover::before {
+    left: 100%;
+  }
+  
+  .gradient-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  }
+  
+  .fade-in {
+    animation: fadeIn 0.6s ease-out forwards;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .slide-up {
+    animation: slideUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  }
+  
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .pulse-heart {
+    animation: pulseHeart 0.3s ease-in-out;
+  }
+  
+  @keyframes pulseHeart {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+  }
+  
+  .floating {
+    animation: floating 3s ease-in-out infinite;
+  }
+  
+  @keyframes floating {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
   }
 }

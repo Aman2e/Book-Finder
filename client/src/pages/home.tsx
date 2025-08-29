@@ -108,20 +108,21 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground font-sans">
+    <div className="min-h-screen text-foreground font-sans" style={{ background: 'var(--background)' }}>
       {/* Header */}
-      <header className="bg-card border-b border-border shadow-sm">
-        <div className="container mx-auto px-4 py-6 max-w-6xl">
+      <header className="backdrop-blur-sm border-b border-border/50 shadow-lg relative overflow-hidden" style={{ background: 'var(--card)' }}>
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5"></div>
+        <div className="container mx-auto px-4 py-8 max-w-6xl relative z-10">
           <div className="flex items-center justify-between">
             <div className="flex-1"></div>
             <div className="flex items-center text-center">
-              <div>
-                <h1 className="font-serif text-4xl md:text-5xl font-bold text-primary mb-2" data-testid="text-app-title">
-                  <BookOpen className="inline-block mr-3 w-12 h-12" />
+              <div className="slide-up">
+                <h1 className="font-serif text-4xl md:text-6xl font-bold mb-3 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent" data-testid="text-app-title">
+                  <BookOpen className="inline-block mr-4 w-16 h-16 text-primary floating" />
                   Book Finder
                 </h1>
-                <p className="text-muted-foreground text-lg" data-testid="text-app-subtitle">
-                  Discover your next great read
+                <p className="text-muted-foreground text-xl font-medium" data-testid="text-app-subtitle">
+                  Discover your next great read ✨
                 </p>
               </div>
             </div>
@@ -137,23 +138,29 @@ export default function Home() {
         <SearchBar onSearch={handleSearch} isLoading={isLoading} />
 
         {/* Search Results */}
-        <section id="search-results">
+        <section id="search-results" className="slide-up">
           {renderSearchResults()}
         </section>
 
         {/* Recent Searches */}
         {recentSearches.length > 0 && (
-          <section className="mt-16 bg-muted/30 rounded-lg p-6" data-testid="recent-searches">
-            <h3 className="font-serif text-xl font-semibold text-foreground mb-4">Recent Searches</h3>
-            <div className="flex flex-wrap gap-2">
+          <section className="mt-16 bg-muted/20 backdrop-blur-sm rounded-2xl p-8 border border-border/50 shadow-lg fade-in" data-testid="recent-searches">
+            <h3 className="font-serif text-2xl font-bold text-foreground mb-6 flex items-center">
+              <BookOpen className="w-6 h-6 mr-2 text-primary" />
+              Recent Searches
+            </h3>
+            <div className="flex flex-wrap gap-3">
               {recentSearches.map((search, index) => (
                 <Button
                   key={index}
                   variant="outline"
                   size="sm"
                   onClick={() => handleSearch(search)}
-                  className="text-sm bg-card border border-border text-foreground px-3 py-2 rounded-md hover:bg-muted transition-colors"
+                  className="text-sm bg-card/80 backdrop-blur-sm border-2 border-border/60 text-foreground px-4 py-2 rounded-full hover:bg-muted hover:scale-105 transition-all duration-300 shadow-sm"
                   data-testid={`button-recent-search-${index}`}
+                  style={{
+                    animationDelay: `${index * 100}ms`
+                  }}
                 >
                   "{search}"
                 </Button>
@@ -162,7 +169,7 @@ export default function Home() {
                 variant="ghost"
                 size="sm"
                 onClick={clearRecentSearches}
-                className="text-sm text-muted-foreground px-3 py-2 hover:text-foreground transition-colors"
+                className="text-sm text-muted-foreground px-4 py-2 hover:text-foreground hover:bg-destructive/10 transition-all duration-300 rounded-full"
                 data-testid="button-clear-recent"
               >
                 <AlertCircle className="w-4 h-4 mr-1" />
@@ -174,14 +181,19 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-muted/30 border-t border-border mt-16">
-        <div className="container mx-auto px-4 py-8 max-w-6xl">
-          <div className="text-center">
+      <footer className="bg-muted/20 backdrop-blur-sm border-t border-border/50 mt-20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5"></div>
+        <div className="container mx-auto px-4 py-12 max-w-6xl relative z-10">
+          <div className="text-center space-y-4">
+            <div className="flex items-center justify-center space-x-2 mb-4">
+              <BookOpen className="w-5 h-5 text-primary" />
+              <span className="font-medium text-foreground">Book Finder</span>
+            </div>
             <p className="text-muted-foreground text-sm">
               Powered by{' '}
               <a 
                 href="https://openlibrary.org" 
-                className="text-primary hover:underline" 
+                className="text-primary hover:underline font-medium transition-colors" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 data-testid="link-open-library"
@@ -189,9 +201,16 @@ export default function Home() {
                 Open Library API
               </a>
             </p>
-            <p className="text-muted-foreground text-xs mt-2">
+            <p className="text-muted-foreground text-xs">
               Built with React, Tailwind CSS, and love for books 📚
             </p>
+            <div className="flex justify-center space-x-6 pt-4">
+              <span className="text-xs text-muted-foreground">Discover</span>
+              <span className="text-xs text-muted-foreground">•</span>
+              <span className="text-xs text-muted-foreground">Explore</span>
+              <span className="text-xs text-muted-foreground">•</span>
+              <span className="text-xs text-muted-foreground">Enjoy</span>
+            </div>
           </div>
         </div>
       </footer>

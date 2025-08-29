@@ -2,6 +2,18 @@
 
 This is a Book Finder application built as a full-stack web application that allows users to search for books using the Open Library API. The application features a React frontend with TypeScript, Express.js backend, and PostgreSQL database with Drizzle ORM. Users can search for books by title, view book details including covers, authors, and publication years, and manage a favorites list with local storage persistence.
 
+## Recent Changes
+
+**Latest Enhancement (January 2025)**: Completely redesigned the UI to be more robust, eye-catching, and interactive:
+
+- **Enhanced Visual Design**: Added gradient backgrounds, improved shadows, and modern glassmorphism effects
+- **Advanced Animations**: Implemented floating animations, pulse effects, shimmer loading states, and smooth transitions
+- **Interactive Elements**: Enhanced book cards with hover effects, image zoom, and animated favorite buttons
+- **Dark Mode Support**: Added comprehensive dark mode toggle with system preference detection
+- **Improved Search Experience**: Added animated search states, better loading indicators, and enhanced suggestion chips
+- **Better Loading States**: Created engaging skeleton screens that match the final layout
+- **Visual Depth**: Added backdrop blur effects, layered gradients, and improved spacing throughout
+
 # User Preferences
 
 Preferred communication style: Simple, everyday language.
