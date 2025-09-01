@@ -1,0 +1,658 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Finder - Discover Your Next Great Read</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                borderRadius: {
+                    lg: "var(--radius)",
+                    md: "calc(var(--radius) - 2px)",
+                    sm: "calc(var(--radius) - 4px)",
+                },
+                colors: {
+                    background: "var(--background)",
+                    foreground: "var(--foreground)",
+                    card: {
+                        DEFAULT: "var(--card)",
+                        foreground: "var(--card-foreground)",
+                    },
+                    popover: {
+                        DEFAULT: "var(--popover)",
+                        foreground: "var(--popover-foreground)",
+                    },
+                    primary: {
+                        DEFAULT: "var(--primary)",
+                        foreground: "var(--primary-foreground)",
+                    },
+                    secondary: {
+                        DEFAULT: "var(--secondary)",
+                        foreground: "var(--secondary-foreground)",
+                    },
+                    muted: {
+                        DEFAULT: "var(--muted)",
+                        foreground: "var(--muted-foreground)",
+                    },
+                    accent: {
+                        DEFAULT: "var(--accent)",
+                        foreground: "var(--accent-foreground)",
+                    },
+                    destructive: {
+                        DEFAULT: "var(--destructive)",
+                        foreground: "var(--destructive-foreground)",
+                    },
+                    border: "var(--border)",
+                    input: "var(--input)",
+                    ring: "var(--ring)",
+                },
+                fontFamily: {
+                    sans: ["var(--font-sans)"],
+                    serif: ["var(--font-serif)"],
+                    mono: ["var(--font-mono)"],
+                }
+            },
+        }
+    };
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --radius: 0.5rem;
+            --background: hsl(43 15% 98%);
+            --foreground: hsl(0 0% 17%);
+            --card: hsl(0 0% 100%);
+            --card-foreground: hsl(0 0% 17%);
+            --popover: hsl(0 0% 100%);
+            --popover-foreground: hsl(0 0% 17%);
+            --primary: hsl(25 60% 35%);
+            --primary-foreground: hsl(0 0% 98%);
+            --secondary: hsl(47 25% 88%);
+            --secondary-foreground: hsl(0 0% 17%);
+            --muted: hsl(45 15% 94%);
+            --muted-foreground: hsl(0 0% 45%);
+            --accent: hsl(120 25% 25%);
+            --accent-foreground: hsl(0 0% 98%);
+            --destructive: hsl(0 84% 60%);
+            --destructive-foreground: hsl(0 0% 98%);
+            --border: hsl(0 0% 90%);
+            --input: hsl(0 0% 95%);
+            --ring: hsl(25 60% 35%);
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --font-serif: 'Playfair Display', Georgia, serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+        
+        .font-serif { font-family: var(--font-serif); }
+        .font-sans { font-family: var(--font-sans); }
+        
+        .book-card {
+            transition: all 0.3s ease;
+        }
+        
+        .book-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .search-focus:focus {
+            box-shadow: 0 0 0 3px hsl(25 60% 35% / 0.2);
+        }
+        
+        .loading-spinner {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .book-shimmer {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+    </style>
+</head>
+<body class="bg-background text-foreground font-sans min-h-screen">
+    <!-- @COMPONENT: Header -->
+    <header class="bg-card border-b border-border shadow-sm">
+        <div class="container mx-auto px-4 py-6 max-w-6xl">
+            <div class="flex items-center justify-center text-center">
+                <div>
+                    <h1 class="font-serif text-4xl md:text-5xl font-bold text-primary mb-2">
+                        <i class="fas fa-book-open mr-3"></i>Book Finder
+                    </h1>
+                    <p class="text-muted-foreground text-lg">Discover your next great read</p>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- @END_COMPONENT: Header -->
+
+    <main class="container mx-auto px-4 py-8 max-w-6xl">
+        <!-- @COMPONENT: SearchSection -->
+        <section class="mb-12">
+            <div class="max-w-2xl mx-auto">
+                <div class="relative">
+                    <input 
+                        type="text" 
+                        placeholder="Search for books by title..."
+                        class="w-full px-6 py-4 text-lg bg-input border border-border rounded-lg search-focus outline-none transition-all duration-200 pl-14"
+                        data-bind="searchQuery"
+                        data-event="input:handleSearch"
+                        data-implementation="Should trigger search API call with debouncing"
+                    />
+                    <i class="fas fa-search absolute left-5 top-1/2 transform -translate-y-1/2 text-muted-foreground text-lg"></i>
+                    <button 
+                        class="absolute right-3 top-1/2 transform -translate-y-1/2 bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 transition-colors"
+                        data-event="click:performSearch"
+                        data-implementation="Should validate input and trigger search"
+                    >
+                        Search
+                    </button>
+                </div>
+                <div class="flex flex-wrap gap-2 mt-4 justify-center">
+                    <!-- @COMPONENT: SuggestedSearches -->
+                    <span class="text-sm text-muted-foreground mr-2">Try:</span>
+                    <button class="text-sm bg-secondary text-secondary-foreground px-3 py-1 rounded-full hover:bg-secondary/80 transition-colors" data-mock="true">
+                        "Harry Potter"
+                    </button>
+                    <button class="text-sm bg-secondary text-secondary-foreground px-3 py-1 rounded-full hover:bg-secondary/80 transition-colors" data-mock="true">
+                        "The Great Gatsby"
+                    </button>
+                    <button class="text-sm bg-secondary text-secondary-foreground px-3 py-1 rounded-full hover:bg-secondary/80 transition-colors" data-mock="true">
+                        "Pride and Prejudice"
+                    </button>
+                    <!-- @END_COMPONENT: SuggestedSearches -->
+                </div>
+            </div>
+        </section>
+        <!-- @END_COMPONENT: SearchSection -->
+
+        <!-- @COMPONENT: SearchResults -->
+        <!-- @STATE: searchResults:array = [], isLoading:boolean = false, hasError:boolean = false -->
+        <section id="search-results">
+            <!-- Loading State -->
+            <div id="loading-state" class="hidden">
+                <!-- @COMPONENT: LoadingSpinner -->
+                <div class="flex flex-col items-center justify-center py-16">
+                    <div class="loading-spinner text-4xl text-primary mb-4">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <p class="text-muted-foreground text-lg">Searching for books...</p>
+                </div>
+                <!-- @END_COMPONENT: LoadingSpinner -->
+
+                <!-- @COMPONENT: LoadingSkeleton -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8">
+                    <!-- @MAP: Array(8).fill(0).map((_, index) => ( -->
+                    <div class="bg-card border border-border rounded-lg overflow-hidden book-shimmer">
+                        <div class="h-64 bg-muted"></div>
+                        <div class="p-4">
+                            <div class="h-4 bg-muted rounded mb-2"></div>
+                            <div class="h-3 bg-muted rounded mb-1 w-3/4"></div>
+                            <div class="h-3 bg-muted rounded w-1/2"></div>
+                        </div>
+                    </div>
+                    <!-- @END_MAP )) -->
+                    <div class="bg-card border border-border rounded-lg overflow-hidden book-shimmer">
+                        <div class="h-64 bg-muted"></div>
+                        <div class="p-4">
+                            <div class="h-4 bg-muted rounded mb-2"></div>
+                            <div class="h-3 bg-muted rounded mb-1 w-3/4"></div>
+                            <div class="h-3 bg-muted rounded w-1/2"></div>
+                        </div>
+                    </div>
+                    <div class="bg-card border border-border rounded-lg overflow-hidden book-shimmer">
+                        <div class="h-64 bg-muted"></div>
+                        <div class="p-4">
+                            <div class="h-4 bg-muted rounded mb-2"></div>
+                            <div class="h-3 bg-muted rounded mb-1 w-3/4"></div>
+                            <div class="h-3 bg-muted rounded w-1/2"></div>
+                        </div>
+                    </div>
+                    <div class="bg-card border border-border rounded-lg overflow-hidden book-shimmer">
+                        <div class="h-64 bg-muted"></div>
+                        <div class="p-4">
+                            <div class="h-4 bg-muted rounded mb-2"></div>
+                            <div class="h-3 bg-muted rounded mb-1 w-3/4"></div>
+                            <div class="h-3 bg-muted rounded w-1/2"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- @END_COMPONENT: LoadingSkeleton -->
+            </div>
+
+            <!-- Error State -->
+            <div id="error-state" class="hidden">
+                <!-- @COMPONENT: ErrorMessage -->
+                <div class="flex flex-col items-center justify-center py-16 text-center">
+                    <div class="text-6xl text-destructive mb-4">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-foreground mb-2">Oops! Something went wrong</h3>
+                    <p class="text-muted-foreground mb-6 max-w-md">
+                        We couldn't fetch the books right now. Please check your connection and try again.
+                    </p>
+                    <button 
+                        class="bg-primary text-primary-foreground px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors"
+                        data-event="click:retrySearch"
+                        data-implementation="Should retry the last search query"
+                    >
+                        <i class="fas fa-redo mr-2"></i>Try Again
+                    </button>
+                </div>
+                <!-- @END_COMPONENT: ErrorMessage -->
+            </div>
+
+            <!-- No Results State -->
+            <div id="no-results-state" class="hidden">
+                <!-- @COMPONENT: NoResults -->
+                <div class="flex flex-col items-center justify-center py-16 text-center">
+                    <div class="text-6xl text-muted-foreground mb-4">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-foreground mb-2">No books found</h3>
+                    <p class="text-muted-foreground mb-6 max-w-md">
+                        We couldn't find any books matching your search. Try different keywords or check the spelling.
+                    </p>
+                    <div class="flex flex-wrap gap-2 justify-center">
+                        <span class="text-sm text-muted-foreground mr-2">Suggestions:</span>
+                        <button class="text-sm bg-secondary text-secondary-foreground px-3 py-1 rounded-full hover:bg-secondary/80 transition-colors">
+                            Try broader terms
+                        </button>
+                        <button class="text-sm bg-secondary text-secondary-foreground px-3 py-1 rounded-full hover:bg-secondary/80 transition-colors">
+                            Check spelling
+                        </button>
+                    </div>
+                </div>
+                <!-- @END_COMPONENT: NoResults -->
+            </div>
+
+            <!-- Results Grid -->
+            <div id="results-grid">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-semibold text-foreground">
+                        Search Results <span class="text-muted-foreground text-lg" data-bind="searchResults.length" data-mock="true">(24 books found)</span>
+                    </h2>
+                    <div class="flex items-center gap-2">
+                        <label class="text-sm text-muted-foreground">Sort by:</label>
+                        <select class="bg-input border border-border rounded px-3 py-1 text-sm" data-implementation="Should sort results by different criteria">
+                            <option>Relevance</option>
+                            <option>Publication Year</option>
+                            <option>Title A-Z</option>
+                            <option>Author A-Z</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- @COMPONENT: BookGrid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <!-- @MAP: searchResults.map(book => ( -->
+                    
+                    <!-- @COMPONENT: BookCard -->
+                    <div class="bg-card border border-border rounded-lg overflow-hidden book-card shadow-sm">
+                        <!-- Book cover image displaying classic literature cover -->
+                        <img 
+                            src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=400" 
+                            alt="Book cover" 
+                            class="w-full h-64 object-cover bg-muted"
+                            data-bind="book.coverUrl"
+                            data-mock-image="true"
+                            data-implementation="Use Open Library cover API: https://covers.openlibrary.org/b/id/{cover_id}-M.jpg"
+                        />
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg text-foreground mb-1 line-clamp-2" data-bind="book.title" data-mock="true">
+                                The Great Gatsby
+                            </h3>
+                            <p class="text-muted-foreground text-sm mb-1" data-bind="book.author" data-mock="true">
+                                by F. Scott Fitzgerald
+                            </p>
+                            <p class="text-muted-foreground text-xs" data-bind="book.publishYear" data-mock="true">
+                                Published: 1925
+                            </p>
+                            <div class="mt-3 flex justify-between items-center">
+                                <button class="text-primary hover:text-primary/80 transition-colors text-sm" data-implementation="Should show book details modal">
+                                    <i class="fas fa-eye mr-1"></i>View Details
+                                </button>
+                                <button class="text-accent hover:text-accent/80 transition-colors" data-implementation="Should add to favorites using localStorage">
+                                    <i class="far fa-heart"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- @END_COMPONENT: BookCard -->
+
+                    <!-- Additional sample book cards for demo -->
+                    <div class="bg-card border border-border rounded-lg overflow-hidden book-card shadow-sm">
+                        <!-- Classic novel cover with vintage aesthetic -->
+                        <img 
+                            src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=400" 
+                            alt="Book cover" 
+                            class="w-full h-64 object-cover bg-muted"
+                            data-mock-image="true"
+                        />
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg text-foreground mb-1 line-clamp-2" data-mock="true">
+                                Pride and Prejudice
+                            </h3>
+                            <p class="text-muted-foreground text-sm mb-1" data-mock="true">
+                                by Jane Austen
+                            </p>
+                            <p class="text-muted-foreground text-xs" data-mock="true">
+                                Published: 1813
+                            </p>
+                            <div class="mt-3 flex justify-between items-center">
+                                <button class="text-primary hover:text-primary/80 transition-colors text-sm">
+                                    <i class="fas fa-eye mr-1"></i>View Details
+                                </button>
+                                <button class="text-accent hover:text-accent/80 transition-colors">
+                                    <i class="fas fa-heart text-red-500"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-card border border-border rounded-lg overflow-hidden book-card shadow-sm">
+                        <!-- Modern literature book cover -->
+                        <img 
+                            src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=400" 
+                            alt="Book cover" 
+                            class="w-full h-64 object-cover bg-muted"
+                            data-mock-image="true"
+                        />
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg text-foreground mb-1 line-clamp-2" data-mock="true">
+                                To Kill a Mockingbird
+                            </h3>
+                            <p class="text-muted-foreground text-sm mb-1" data-mock="true">
+                                by Harper Lee
+                            </p>
+                            <p class="text-muted-foreground text-xs" data-mock="true">
+                                Published: 1960
+                            </p>
+                            <div class="mt-3 flex justify-between items-center">
+                                <button class="text-primary hover:text-primary/80 transition-colors text-sm">
+                                    <i class="fas fa-eye mr-1"></i>View Details
+                                </button>
+                                <button class="text-accent hover:text-accent/80 transition-colors">
+                                    <i class="far fa-heart"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-card border border-border rounded-lg overflow-hidden book-card shadow-sm">
+                        <!-- Contemporary fiction book cover -->
+                        <img 
+                            src="https://images.unsplash.com/photo-1592496431122-2349e0fbc666?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=400" 
+                            alt="Book cover" 
+                            class="w-full h-64 object-cover bg-muted"
+                            data-mock-image="true"
+                        />
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg text-foreground mb-1 line-clamp-2" data-mock="true">
+                                1984
+                            </h3>
+                            <p class="text-muted-foreground text-sm mb-1" data-mock="true">
+                                by George Orwell
+                            </p>
+                            <p class="text-muted-foreground text-xs" data-mock="true">
+                                Published: 1949
+                            </p>
+                            <div class="mt-3 flex justify-between items-center">
+                                <button class="text-primary hover:text-primary/80 transition-colors text-sm">
+                                    <i class="fas fa-eye mr-1"></i>View Details
+                                </button>
+                                <button class="text-accent hover:text-accent/80 transition-colors">
+                                    <i class="far fa-heart"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-card border border-border rounded-lg overflow-hidden book-card shadow-sm">
+                        <!-- Science fiction book cover -->
+                        <img 
+                            src="https://images.unsplash.com/photo-1589829085413-56de8ae18c73?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=400" 
+                            alt="Book cover" 
+                            class="w-full h-64 object-cover bg-muted"
+                            data-mock-image="true"
+                        />
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg text-foreground mb-1 line-clamp-2" data-mock="true">
+                                Dune
+                            </h3>
+                            <p class="text-muted-foreground text-sm mb-1" data-mock="true">
+                                by Frank Herbert
+                            </p>
+                            <p class="text-muted-foreground text-xs" data-mock="true">
+                                Published: 1965
+                            </p>
+                            <div class="mt-3 flex justify-between items-center">
+                                <button class="text-primary hover:text-primary/80 transition-colors text-sm">
+                                    <i class="fas fa-eye mr-1"></i>View Details
+                                </button>
+                                <button class="text-accent hover:text-accent/80 transition-colors">
+                                    <i class="far fa-heart"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-card border border-border rounded-lg overflow-hidden book-card shadow-sm">
+                        <!-- Fantasy book cover -->
+                        <img 
+                            src="https://images.unsplash.com/photo-1621351183012-e2f9972dd9bf?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=400" 
+                            alt="Book cover" 
+                            class="w-full h-64 object-cover bg-muted"
+                            data-mock-image="true"
+                        />
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg text-foreground mb-1 line-clamp-2" data-mock="true">
+                                The Lord of the Rings
+                            </h3>
+                            <p class="text-muted-foreground text-sm mb-1" data-mock="true">
+                                by J.R.R. Tolkien
+                            </p>
+                            <p class="text-muted-foreground text-xs" data-mock="true">
+                                Published: 1954
+                            </p>
+                            <div class="mt-3 flex justify-between items-center">
+                                <button class="text-primary hover:text-primary/80 transition-colors text-sm">
+                                    <i class="fas fa-eye mr-1"></i>View Details
+                                </button>
+                                <button class="text-accent hover:text-accent/80 transition-colors">
+                                    <i class="far fa-heart"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-card border border-border rounded-lg overflow-hidden book-card shadow-sm">
+                        <!-- Mystery book cover -->
+                        <img 
+                            src="https://pixabay.com/get/gcf6ef14c23541aec790a3faa8d4baca3700c83723c335ce89f0220b5a7dc1a6818b882a510dd9a005f8361b707e1345f96066a0350f420f520dac99093230354_1280.jpg" 
+                            alt="Book cover" 
+                            class="w-full h-64 object-cover bg-muted"
+                            data-mock-image="true"
+                        />
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg text-foreground mb-1 line-clamp-2" data-mock="true">
+                                The Girl with the Dragon Tattoo
+                            </h3>
+                            <p class="text-muted-foreground text-sm mb-1" data-mock="true">
+                                by Stieg Larsson
+                            </p>
+                            <p class="text-muted-foreground text-xs" data-mock="true">
+                                Published: 2005
+                            </p>
+                            <div class="mt-3 flex justify-between items-center">
+                                <button class="text-primary hover:text-primary/80 transition-colors text-sm">
+                                    <i class="fas fa-eye mr-1"></i>View Details
+                                </button>
+                                <button class="text-accent hover:text-accent/80 transition-colors">
+                                    <i class="far fa-heart"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-card border border-border rounded-lg overflow-hidden book-card shadow-sm">
+                        <!-- Literary fiction book cover -->
+                        <img 
+                            src="https://pixabay.com/get/gaaa80159d9b8689f1f3237deecabfb204a312c85e6e0f4bbed3c5f30b53b09bcb7c62fb1d4cc99cbd343f194785cfc9ed303833e1a41b91325918bd9add92c4e_1280.jpg" 
+                            alt="Book cover" 
+                            class="w-full h-64 object-cover bg-muted"
+                            data-mock-image="true"
+                        />
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg text-foreground mb-1 line-clamp-2" data-mock="true">
+                                The Catcher in the Rye
+                            </h3>
+                            <p class="text-muted-foreground text-sm mb-1" data-mock="true">
+                                by J.D. Salinger
+                            </p>
+                            <p class="text-muted-foreground text-xs" data-mock="true">
+                                Published: 1951
+                            </p>
+                            <div class="mt-3 flex justify-between items-center">
+                                <button class="text-primary hover:text-primary/80 transition-colors text-sm">
+                                    <i class="fas fa-eye mr-1"></i>View Details
+                                </button>
+                                <button class="text-accent hover:text-accent/80 transition-colors">
+                                    <i class="far fa-heart"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- @END_MAP )) -->
+                </div>
+                <!-- @END_COMPONENT: BookGrid -->
+
+                <!-- @COMPONENT: Pagination -->
+                <div class="flex justify-center items-center gap-2 mt-12">
+                    <button class="px-3 py-2 text-sm border border-border rounded hover:bg-muted transition-colors disabled:opacity-50" disabled data-implementation="Should handle previous page">
+                        <i class="fas fa-chevron-left mr-1"></i>Previous
+                    </button>
+                    
+                    <div class="flex gap-1">
+                        <button class="px-3 py-2 text-sm bg-primary text-primary-foreground rounded">1</button>
+                        <button class="px-3 py-2 text-sm border border-border rounded hover:bg-muted transition-colors">2</button>
+                        <button class="px-3 py-2 text-sm border border-border rounded hover:bg-muted transition-colors">3</button>
+                        <span class="px-3 py-2 text-sm text-muted-foreground">...</span>
+                        <button class="px-3 py-2 text-sm border border-border rounded hover:bg-muted transition-colors">10</button>
+                    </div>
+                    
+                    <button class="px-3 py-2 text-sm border border-border rounded hover:bg-muted transition-colors" data-implementation="Should handle next page">
+                        Next<i class="fas fa-chevron-right ml-1"></i>
+                    </button>
+                </div>
+                <!-- @END_COMPONENT: Pagination -->
+            </div>
+        </section>
+        <!-- @END_COMPONENT: SearchResults -->
+
+        <!-- @COMPONENT: RecentSearches -->
+        <section class="mt-16 bg-muted/30 rounded-lg p-6">
+            <h3 class="font-serif text-xl font-semibold text-foreground mb-4">Recent Searches</h3>
+            <div class="flex flex-wrap gap-2">
+                <button class="text-sm bg-card border border-border text-foreground px-3 py-2 rounded-md hover:bg-muted transition-colors" data-mock="true">
+                    "Harry Potter"
+                </button>
+                <button class="text-sm bg-card border border-border text-foreground px-3 py-2 rounded-md hover:bg-muted transition-colors" data-mock="true">
+                    "Stephen King"
+                </button>
+                <button class="text-sm bg-card border border-border text-foreground px-3 py-2 rounded-md hover:bg-muted transition-colors" data-mock="true">
+                    "Science Fiction"
+                </button>
+                <button class="text-sm text-muted-foreground px-3 py-2 hover:text-foreground transition-colors" data-implementation="Should clear search history">
+                    <i class="fas fa-times mr-1"></i>Clear All
+                </button>
+            </div>
+        </section>
+        <!-- @END_COMPONENT: RecentSearches -->
+    </main>
+
+    <!-- @COMPONENT: Footer -->
+    <footer class="bg-muted/30 border-t border-border mt-16">
+        <div class="container mx-auto px-4 py-8 max-w-6xl">
+            <div class="text-center">
+                <p class="text-muted-foreground text-sm">
+                    Powered by <a href="https://openlibrary.org" class="text-primary hover:underline" target="_blank">Open Library API</a>
+                </p>
+                <p class="text-muted-foreground text-xs mt-2">
+                    Built with React, Tailwind CSS, and love for books 📚
+                </p>
+            </div>
+        </div>
+    </footer>
+    <!-- @END_COMPONENT: Footer -->
+
+    <script>
+        (function() {
+            // TODO: Implement search functionality
+            // TODO: Implement API integration with Open Library
+            // TODO: Implement loading states management
+            // TODO: Implement error handling
+            // TODO: Implement favorites functionality using localStorage
+            // TODO: Implement pagination
+            // TODO: Implement search history
+            
+            // Demo interaction for visual feedback
+            document.addEventListener('DOMContentLoaded', function() {
+                // Add hover effects and demo interactions
+                const bookCards = document.querySelectorAll('.book-card');
+                const favoriteButtons = document.querySelectorAll('.book-card button[data-implementation*="favorites"]');
+                
+                favoriteButtons.forEach(button => {
+                    button.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const icon = this.querySelector('i');
+                        if (icon.classList.contains('far')) {
+                            icon.classList.remove('far');
+                            icon.classList.add('fas', 'text-red-500');
+                        } else {
+                            icon.classList.remove('fas', 'text-red-500');
+                            icon.classList.add('far');
+                        }
+                    });
+                });
+                
+                // Demo search interaction
+                const searchInput = document.querySelector('input[data-bind="searchQuery"]');
+                const searchButton = document.querySelector('button[data-event="click:performSearch"]');
+                
+                searchButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (searchInput.value.trim()) {
+                        // Demo: Show loading state briefly
+                        console.log('Demo: Would search for:', searchInput.value);
+                        // In real implementation, this would trigger the search API call
+                    }
+                });
+                
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        searchButton.click();
+                    }
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
